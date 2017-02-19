@@ -1,0 +1,17 @@
+@charset "utf-8";
+
+body   { background-color:black; font-family:'Malgun Gothic'; margin:0; }
+#h1    { font-size:2em; font-weight:bold; color:#f1f3f1; margin:0 -7px 0 12px; }
+#tabs  { padding:0; }
+#user  { position:absolute; width:320px; left:0; top:0; background-color:white;
+         border:1px solid #aaaaaa; border-radius:5px; }
+#title { margin:5px 0 -5px 5px; }
+#ok    { position:absolute; top:4px; right:10px; background-color:#efefef;
+         border:1px solid #aaaaaa; border-radius:5px; cursor:pointer; }
+
+#user input { margin:0 0 5px 5px; width:300px; padding:3px; }
+
+#msg { position:absolute; background-color:white; border:1px solid #aaaaaa;
+       display:none; top:0; left:0; z-index:150; padding:10px; max-width:100%; }
+
+.ui-widget-header { font-weight:400; }
