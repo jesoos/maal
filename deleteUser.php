@@ -1,6 +1,6 @@
 <?php // deleteUser.php
   require_once 'mail.php';
-  require_once 'isQuittable.php';
+  require_once 'functions1.php';
 
   if (isset($_POST['id'])) {
     $a = explode(',', $_POST['id']);

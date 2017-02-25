@@ -1,5 +1,5 @@
 <?php // updateUser.php
-  require_once 'setNickSure.php';
+  require_once 'functions1.php';
   require_once 'mail.php';
 
   if (isset($_POST['id'])) {
@@ -12,8 +12,8 @@
       sqlUpdate('users', $set, "id=$id") or die('Update error.');
     }
     if (!$set || strpos($set, ',rank=0')) {
-      $row = selectRow('sure,nick', 'users', "id=$id");
-      sendMail3($row[0], '보증 요청', "$row[1] 님이 보증을 요청했습니다.");
+      $row = selectRow('sure,nick,name', 'users', "id=$id");
+      sendMail3($row[0], '보증 요청', "$row[1]($row[2]) 님이 보증을 요청했습니다.");
       die('2');
     }
     echo '1';

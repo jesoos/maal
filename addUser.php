@@ -10,10 +10,10 @@
     if (!$row || $row[1] < 1) die('8');
     $sid  = $row[0];
     $ps   = escapeString(getHash($_POST['pass']));
-    $nm   = escapeString($_POST['name']);
+    $nm   = escapeString($name = $_POST['name']);
     $ml   = escapeString(mess($_POST['mail']));
     sqlInsert('users','nick,pass,name,mail,sure',"'$nk','$ps','$nm','$ml',$sid");
-    sendMail3($sid, '보증 요청', "$nick 님이 보증을 요청했습니다.");
+    sendMail3($sid, '보증 요청', "$nick($name) 님이 보증을 요청했습니다.");
     echo '2';
   }
 ?>

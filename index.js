@@ -8,7 +8,7 @@ $(function() {
   var word0, data1;           // 지운 낱말, 편집 후 데이터
   var eEdit = {};
   var words = localStorage && localStorage.words && JSON?
-                   JSON.parse(localStorage.words): [];
+                      JSON.parse(localStorage.words): [];
   var arg_words = [], arg_i = -1;
   var downloadable = ("download" in document.createElement("a"));
 
@@ -75,11 +75,24 @@ $(function() {
   function checkPhone() {
     var o = $("#phone");
     return checkWhileVisible(o, /^\d+(-\d+)*$/.test(o.val()),
-                             "전화번호 형식이 맞지 않습니다.");
+                         "전화번호 형식이 맞지 않습니다.");
   }
 
   $("#name").change(function() { checkName(); });
-  $("#mail").change(function() { checkMail("#mail"); });
+
+  $("#mail").change(function() {
+     if (checkMail("#mail") && $("#mail") != mail) {
+       $.post("checkMail.php", $(this), function(rc) {
+         if (rc == '1') {
+           if ($("#enter").is(":visible")) {
+             $("#nick").val($("#mail").val()).change();
+           } else {
+             setError($("#mail"), "이미 가입한 전자우편 주소입니다.");
+           }
+         }
+       });
+     }
+  });
 
   $("body").keydown(function(e) {
     if (e.keyCode === $.ui.keyCode.ESCAPE) {
@@ -200,61 +213,53 @@ $(function() {
     });
   });
 
-  function doMail(rc0, php0) {
-    var arg = serialize("#mail", mail);
-    if (arg) {
-      $("#ok").hide();    
-      arg = $("#nick").serialize() +"&id="+ uid + arg;
-      $.post("confirmMail.php", arg, function(rc) {
-        if (rc0) {
-          updateMsg(rc0, php0, rc == '0'? "전자우편을 열고 확인을 누르시오.": "");
-        } else {
-          updateMsg(rc, "confirmMail.php");
-        }
-        if (rc == "0") {
-          $("#exit").click();
-          closeDialog();
-        }
-      });
-    } else if (rc0) {
-      updateMsg(rc0, php0);
-    } else {
-      doCancel();
-    }
-  }
-
   // [확인] 버튼 처리
   $("#ok").click(function() {
     if ($("#signin").is(":visible")) {  // 로그인
       checkPass();
     } else if (checkName() && checkMail("#mail") && checkSure()) {
+      var ok = $(this);
       if (uid) {
-        var arg = serialize("#nick", nick) + serialize("#name", name);
-        var n = $("#nick").val(), s = $("#sure").val();
-        if (n !== s || nick !== sure) {
-          arg += serialize("#sure", sure);
-        }
-//        if (arg || $("#enter").is(":visible")) {
+        var arg = serialize("#mail", mail);
         if (arg) {
-          $.post("updateUser.php", "id="+ uid + arg, function(rc) {
-            if (rc == '1' || rc == '2') {
-              doMail(rc,"updateUser.php");
-            } else {
-              updateMsg(rc, "updateUser.php");
+          arg = $("#nick").serialize() +"&id="+ uid + arg;
+          ok.hide();  // 메일 주소 변경
+          $.post("confirmMail.php", arg, function(rc) {
+            updateMsg(rc, "confirmMail.php");
+            ok.show();
+            if (rc == '0') {
+              doUpdate();
             }
           });
         } else {
-          doMail();
+          doUpdate()
         }
       } else {
+        ok.hide();  // 새로 가입
         $.post("confirmMail.php", $("#nick,#name,#mail,#sure"), function(rc) {
           updateMsg(rc, "confirmMail.php");
+          ok.show();
         });
       }
     }
   });
 
-  function updateMsg(rc, php, more) {
+  function doUpdate() {
+    var arg = serialize("#nick", nick) + serialize("#name", name);
+    var n = $("#nick").val(), s = $("#sure").val();
+    if (n !== s || nick !== sure) {
+      arg += serialize("#sure", sure);
+    }
+    if (arg) {
+      $.post("updateUser.php", "id="+ uid + arg, function(rc) {
+        updateMsg(rc, "updateUser.php");
+      });
+    } else {
+      doCancel();  // 메일 주소 변경
+    }
+  }
+
+  function updateMsg(rc, php) {
     if (rc === "c") {
       doCancel();
       info("전자우편을 열고 확인을 누르시오.");
@@ -267,17 +272,15 @@ $(function() {
         saveValues();
         closeDialog();
       }
-      if (more) info(more);
     } else if (rc === '2') {
       var sure = $("#sure").val();
       $("#exit").click();
       closeDialog();
-      var m = sure +" 님이 보증하거나 거절하면 전자우편으로 알려드립니다.";
-      if (more) m = more +"<br>"+ m;
-      info(m);
+      info(sure +" 님이 보증하거나 거절하면 전자우편으로 알려드립니다.");
     } else if ($.isNumeric(rc)) {
-      check($("#nick"), (rc & 4) === 0, "사용 중인 아이디입니다.");
-      check($("#sure"), (rc & 8) === 0, "다른 아이디를 넣으시오.");
+      check($("#nick"), (rc &  4) === 0, "이미 가입한 아이디입니다.");
+      check($("#sure"), (rc &  8) === 0, "다른 아이디를 넣으시오.");
+      check($("#mail"), (rc & 16) === 0, "이미 가입한 전자우편 주소입니다.");
     } else {
       serverError(php, rc);
     }
@@ -288,7 +291,7 @@ $(function() {
     $("#name_mail_sure,#quit,#x-ask,#passx").hide();
     $("#signin").show();                    // 로그인
     openDialog("들어가기");
-  });    // 팜업 창 제목 "들어가기"
+  });    // 팝업 창 제목 "들어가기"
 
   // 사용자 버튼 클릭  -- 사용자 정보 변경
   $("#user_info").click(function() {
