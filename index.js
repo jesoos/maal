@@ -228,7 +228,7 @@ $(function() {
             updateMsg(rc, "confirmMail.php");
             ok.show();
             if (rc == '0') {
-              doUpdate();
+              doUpdate(true);
             }
           });
         } else {
@@ -244,7 +244,7 @@ $(function() {
     }
   });
 
-  function doUpdate() {
+  function doUpdate(wasMail) {
     var arg = serialize("#nick", nick) + serialize("#name", name);
     var n = $("#nick").val(), s = $("#sure").val();
     if (n !== s || nick !== sure) {
@@ -253,7 +253,12 @@ $(function() {
     if (arg) {
       $.post("updateUser.php", "id="+ uid + arg, function(rc) {
         updateMsg(rc, "updateUser.php");
+        if (wasMail && rc == '1') {
+          $("#exit").click();
+        }
       });
+    } else if (wasMail) {
+      $("#exit").click();
     } else {
       doCancel();  // 메일 주소 변경
     }

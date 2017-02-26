@@ -9,7 +9,7 @@
 <table>
 <?php // a.php
 require_once 'functions.php';
-$a = selectRows('nick,name,rank,mail', 'users', '1 ORDER BY mail');
+$a = selectRows('nick,name,rank,mail', 'users', '1 ORDER BY name');
 forEach ($a as $row) {
   echo "<tr><td>".$row[0]."<td>".$row[1]."<td>".$row[2]."<td>".mess($row[3]);
 }
