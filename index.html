@@ -1,0 +1,316 @@
+<!DOCTYPE html> 
+<html lang="ko"> 
+<head> 
+  <meta charset="utf-8"> 
+  <title>배달말집</title> 
+  <meta name="viewport" content="width=device-width, initial-scale=1"> 
+  <link rel="stylesheet" href="//ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/themes/smoothness/jquery-ui.min.css"> 
+  <link rel="stylesheet" href="index.css"> 
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script> 
+  <script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js"></script> 
+  <script src="diff_match_patch.js"></script> 
+  <script src="jquery.pretty-text-diff.min.js"></script> 
+  <script src="index.js"></script> 
+</head> 
+<body> 
+  <span id="h1">배달말집</span>&nbsp; 
+  <i id="count1" class="yellow" title="올림말"></i> 
+  <i id="count2" class="green" title="자취"></i> 
+  <i id="count3" class="white" title="적바림"></i> 
+  <!--i id="count4" class="yellow" title="올린 올림말"></i> 
+  <i id="count5" class="white" title="버린 올림말"></i--> 
+  <input name="arg" id="arg" placeholder="올림말" class="padn ui-widget ui-corner-all"> 
+  <span id="arg-l">&#x25c0;</span> 
+  <span id="arg-r">&#x25b6;</span> 
+  <button id="dummy"></button> 
+  <div id="tabs"> 
+    <ul> 
+      <li><a id="t1" href="#tab1" class="b-yellow"></a></li> 
+      <li><a id="t2" href="#tab2" class="b-green">자취</a></li> 
+      <li><a id="t3" href="#tab3">적바림</a></li> 
+      <li><a id="t4" href="#tab4" title="도움말">?</a></li> 
+      <li><a id="t5" href="#tab5"></a></li> 
+      <li><a id="t6" href="#viewer"></a></li> 
+    </ul> 
+ 
+    <div id="tab1"></div> 
+    <div id="tab2"></div> 
+    <div id="tab3"></div> 
+    <div id="tab4"></div> 
+    <div id="tab5"> 
+      <div id="menu" class="ui-menu ui-widget ui-corner-top"> &nbsp; 
+        <span id="s0">&nbsp;<b>&#x25ce;</b> </span> 
+         <span id="s2">&nbsp;씨 </span> 
+        <span data-a="&#x25ef;" title="뜻갈래">&nbsp;&#x25ef; </span> 
+        <span data-a="&#xb6;" title="쓰임">&nbsp;&#xb6; </span> 
+        <span id="s3">&nbsp;이</span><span id="s4">웃 </span> 
+        <span data-a="☛" title="가보시오">&nbsp;☛ </span> 
+        <span id="s6">&nbsp;··· </span> 
+        <span id="s5">&nbsp;【 】 </span> 
+        <!--span data-a="&#x25a3;" title="그림&#xb7;사진">&nbsp;&#x25a3;&nbsp;</span--> 
+ 
+        <ul id="m0" class="padn"> 
+          <li id="view">보기 &nbsp; &nbsp; &nbsp; &nbsp; </li> 
+          <li id="view1">미리 보기 &nbsp; &nbsp; &nbsp;&nbsp; </li> 
+          <li id="revert">되돌리기 <small>Ctrl+Z</small></li> 
+          <li id="save">갈무리 <small>Ctrl+S</small></li> 
+          <li id="delete">지우기 &nbsp; &nbsp; &nbsp; &nbsp; </li> 
+          <li>-</li> 
+          <li id="convert">탈바꿈 <small>Ctrl+Q</small></li> 
+          <li id="download">내려받기 &nbsp; &nbsp; &nbsp; &nbsp; 
+            <ul> 
+              <li id="dl-t">.txt</li> 
+              <li id="dl-h">.html</li> 
+              <!--li id="dl-l">LaTex</li> 
+              <li id="dl-e">ePub</li--> 
+            </ul> 
+          </li> 
+        </ul> 
+        <ul id="m2" class="padn"> 
+          <li>이름씨 
+            <ul> 
+              <li data-a="〔이〕">이름씨</li> 
+              <li data-a="〔대이〕">대이름씨</li> 
+              <li data-a="〔매이〕">매인이름씨</li> 
+            </ul> 
+          </li> 
+          <li data-a="〔셈〕">셈씨</li> 
+          <li>움직씨 
+            <ul> 
+              <li data-a="〔움〕">움직씨</li> 
+              <li data-a="〔제움〕">제움직씨</li> 
+              <li data-a="〔남움〕">남움직씨</li> 
+              <li data-a="〔도움〕">도움움직씨</li> 
+            </ul> 
+          </li> 
+          <li>그림씨 
+            <ul> 
+              <li data-a="〔그〕">그림씨</li> 
+              <li data-a="〔도그〕">도움그림씨</li> 
+            </ul> 
+          </li> 
+          <li data-a="〔매김〕">매김씨</li> 
+          <li data-a="〔어찌〕">어찌씨</li> 
+          <li data-a="〔느낌〕">느낌씨</li> 
+          <li>끝&#xb7;가지 
+            <ul> 
+              <li data-a="〔토〕">토씨</li> 
+              <li data-a="〔씨끝〕">씨끝</li> 
+              <!--li data-a="〔가지〕">가지</li--> 
+              <li data-a="〔앞〕">앞가지</li> 
+              <li data-a="〔속〕">속가지</li> 
+              <li data-a="〔뒷〕">뒷가지</li> 
+            </ul> 
+          </li> 
+        </ul> 
+        <ul id="m3" class="padn"> 
+          <li data-a="<">본딧말 &lt;</li> 
+          <li data-a=">">준말 &gt;</li> 
+          <li data-a="=">한뜻말 =</li> 
+          <li data-a="&#x2248;">비슷한말 &#x2248;</li> 
+          <li data-a="&#x2194;">맞선말 &#x2194;</li> 
+          <li data-a="&#x2192;">다듬은말 &#x2192;</li> 
+        </ul> 
+        <ul id="m4" class="padn"> 
+          <li data-a="[큰]">큰말</li> 
+          <li data-a="[작은]">작은말</li> 
+          <li data-a="[센]">센말</li> 
+          <li data-a="[여린]">여린말</li> 
+          <li data-a="[높임]">높임말</li> 
+          <li data-a="[낮춤]">낮춤말</li> 
+          <li data-a="[갈래]">갈래말</li> 
+        </ul> 
+        <ul id="m5" class="padn"> 
+          <li data-a="【덧풀이】">【덧풀이】</li> 
+          <li data-a="【익은말】">【익은말】</li> 
+          <li data-a="【옛말】">【옛말】</li> 
+          <li data-a="【끝바꿈】">【끝바꿈】</li> 
+          <li>이음꼴 
+            <ul> 
+              <li data-a="(이음꼴/">이음꼴</li> 
+              <li data-a="(맞섬)">맞섬</li> 
+              <li data-a="(딸림)">딸림</li> 
+              <li data-a="(도움)">도움</li> 
+            </ul> 
+          </li> 
+          <li>바꿈꼴 
+            <ul> 
+              <li data-a="(바꿈꼴/">바꿈꼴</li> 
+              <li data-a="(이름)">이름</li> 
+              <li data-a="(매김)">매김</li> 
+              <li data-a="(어찌)">어찌</li> 
+             </ul> 
+          </li> 
+          <li>마침꼴 
+            <ul> 
+              <li data-a="(마침꼴/">마침꼴</li> 
+              <li data-a="(여느)">여느</li> 
+              <li data-a="(느낌)">느낌</li> 
+              <li data-a="(물음)">물음</li> 
+              <li data-a="(시킴)">시킴</li> 
+              <li data-a="(바람)">바람</li> 
+            </ul> 
+          </li> 
+        </ul> 
+        </ul> 
+        <ul id="m6" class="padn"> 
+          <li data-a="·">가운뎃점 &nbsp;· </li> 
+          <li data-a="‘’">작은따옴표 ‘’</li> 
+          <li data-a="“”">큰따옴표 “”</li> 
+          <li data-a="«»">출전 «»</li> 
+          <li data-a="―">줄표 ―</li> 
+          <li data-a="…">줄임표 …</li> 
+          <li id="box" data-a="［］">테두리［］</li> 
+          <!--li data-a="∼">물결표 ∼</li--> 
+        </ul> 
+      </div> 
+      <textarea id="edit" name="data" 
+             class="ui-widget-content ui-corner-bottom"></textarea> 
+    </div> 
+    <div id="viewer"></div> 
+
+    <img id="enter" title="들어가기" src="glyphicons-387-log-in.png"> 
+    <div id="exit_div"> 
+      <img id="user_info" src="glyphicons-4-user.png"> 
+      <img id="exit" title="나가기" src="glyphicons-388-log-out.png"> 
+    </div> 
+ 
+    <div id="user" class="padn"> 
+      <div id="title"></div> 
+      <div> 
+        <span id="x-ask" title="전자우편 못 받음">?</span> 
+        <span id="ok" class="b-shade">&nbsp;확인&nbsp;</span> 
+        <span class="x-close">&#10006;</span> 
+      </div> 
+      <hr> 
+      <label>아이디:</label> 
+      <input type="text" name="nick" id="nick" required 
+                        class="text ui-widget-content ui-corner-all"> 
+      <div id="signin"> 
+        <label>비밀번호:</label> 
+        <input type="password" name="pass" id="pass" required 
+                          class="text ui-widget-content ui-corner-all"> 
+        <a id="passx" href="#">비밀번호 바꾸기</a> 
+      </div> 
+      <div id="name_mail_sure"> 
+        <label>이름:</label> 
+        <input type="text" name="name" id="name" required 
+                          class="text ui-widget-content ui-corner-all"><br> 
+        <label>전자우편:</label> 
+        <input type="email" name="mail" id="mail" required 
+                    placeholder="전자우편 받을 주소" 
+                          class="text ui-widget-content ui-corner-all"> 
+        <label>보증인:</label> 
+        <input type="text" name="sure" id="sure" required 
+                           placeholder="보증인 아이디" 
+                           class="text ui-widget-content ui-corner-all"> 
+        <a id="quit" href="#">탈퇴</a> 
+      </div> 
+      <p id="tip"></p> 
+    </div> 
+ 
+    <div id="q-req" class="padn"> 
+      <div id="q-title">탈퇴 요청</div> 
+      <div> 
+        <span class="b-shade">&nbsp;확인&nbsp;</span> 
+        <span class="x-close">&#10006;</span> 
+      </div> 
+      <hr> 
+      <div><span id="q-sure"></span> 
+님이 승낙하기 전에 배달말집에 다시 들어오시면 탈퇴 요청이 취소됩니다. 
+      </div> 
+    </div> 
+ 
+    <div id="ask" class="padn"> 
+      <div id="a-title">전자우편 못 받음</div> 
+      <div> 
+        <span class="b-shade">&nbsp;확인&nbsp;</span> 
+        <span class="x-close">&#10006;</span> 
+      </div> 
+      <hr> 
+      <label>전자우편:</label> 
+      <input type="email" name="a-mail" id="a-mail" required 
+                   placeholder="전자우편 받을 주소" 
+                          class="text ui-widget-content ui-corner-all"> 
+      <label>전화번호:</label> 
+      <input type="text" name="phone" id="phone" required 
+                  placeholder="확인 전화 받을 번호" 
+                        class="text ui-widget-content ui-corner-all"> 
+    </div> 
+ 
+    <table id="ans" class="padn"> 
+      <thead> 
+        <tr> 
+          <td colspan="3"> 
+전자우편 살핌 &nbsp; <span class="b-shade">&nbsp;확인&nbsp;</span> 
+<div class="x-close">&#10006;</div> 
+          </td> 
+        </tr> 
+      </thead> 
+      <tbody></tbody> 
+    </table> 
+
+    <table id="toSure" class="padn"> 
+      <thead> 
+        <tr> 
+          <td colspan="4"> 
+요청 다루기 &nbsp; <span class="b-shade">&nbsp;확인&nbsp;</span> 
+<div class="x-close">&#10006;</div> 
+          </td> 
+        </tr> 
+      </thead> 
+      <tbody></tbody> 
+    </table> 
+
+    <table id="list" class="padn"> 
+      <thead> 
+        <tr> 
+          <td colspan="4"> 
+<i><b>겨<small>레말</small>살<small>리는</small>이<small>들</small></b> 
+<sup></sup></i>&nbsp; &nbsp; 모두<input type="checkbox"><sup></sup> 
+<img id="notice" src='glyphicons-11-envelope.png'> 
+<div class="x-close">&#10006;</div> 
+          </td> 
+        </tr> 
+      </thead> 
+      <tbody></tbody> 
+    </table> 
+  </div> 
+ 
+  <div id="word" class="padn"> 
+    <span class="ui-widget"><b>올림말</b></span>&nbsp; 
+    <span class="b-shade">&nbsp;바꿈&nbsp;</span>&nbsp;<br> 
+    <input type="text" name="word" required placeholder="새 올림말" 
+          class="text ui-widget ui-corner-all"> 
+    <div class="x-close">&#10006;</div> 
+  </div>
+ 
+  <div id="editor" class="padn"> 
+    <span class="ui-widget"><b>살피는이</b></span>&nbsp;
+    <span class="b-shade">&nbsp;바꿈&nbsp;</span> &nbsp;<br> 
+    <input type="text" name="editor" required placeholder="다음 살피는이" 
+          class="text ui-widget ui-corner-all"> 
+    <div class="x-close">&#10006;</div> 
+  </div> 
+ 
+  <table id="editors" class="padn"> 
+    <thead> 
+      <tr> 
+        <td colspan="2">&nbsp;<div class="x-close">&#10006;</div></td> 
+      </tr> 
+    </thead> 
+    <tbody></tbody> 
+  </table> 
+ 
+  <div id="note-form" class="padn"> 
+    <div>전자우편 &nbsp; 
+      <span id="send-note" class="b-shade">&nbsp;보내기&nbsp;</span> 
+      <span class="x-close">&#10006;</span></div> 
+    <input type="text" name="subj" id="subj" placeholder="제목" 
+                         class="text ui-widget ui-corner-top"><br> 
+    <textarea id="note" name="note" class="ui-widget ui-corner-bottom"></textarea> 
+  </div> 
+ 
+  <div id="msg"></div> 
+</body> 
+</html>
