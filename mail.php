@@ -6,13 +6,13 @@ function sendMail0($to, $toa, $isHtml, $subject, $body, $re, $rea) {
   $mail = new PHPMailer;
   //$mail->SMTPDebug = 3;
   $mail->CharSet = 'UTF-8';
-  $mail->isSMTP();
   $mail->Host = 'smtp.gmail.com';
+  $mail->Port = 587;
+  $mail->isSMTP();
+  $mail->SMTPSecure = 'tls';
   $mail->SMTPAuth = true;
   $mail->Username = 'maljib.org';
   $mail->Password = 'rlatjddms';
-  $mail->SMTPSecure = 'tls';
-  $mail->Port = 587;
 
   $maljib  = '배달말집';
   $maljiba = 'maljib.org@gmail.com';
