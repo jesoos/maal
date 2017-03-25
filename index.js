@@ -812,7 +812,7 @@ $(function() {
     }
   }).keydown(function(e) {
     if (e.keyCode === $.ui.keyCode.ENTER) {
-      var arg = $(this).val().trim();
+      var arg = $(this).val().trim().replace(/\s+(0*\d+)$/, "$1");
       $(this).val(arg);
       if (arg) {
         if (/[!@#*]/.test(arg)) {
